@@ -1,0 +1,33 @@
+CREATE TABLE pds_persons (
+    pds_person_id INT AUTO_INCREMENT PRIMARY KEY,
+    pds_surname VARCHAR(50) NOT NULL,
+    pds_first_name VARCHAR(50) NOT NULL,
+    pds_middle_name VARCHAR(50),
+    pds_date_of_birth DATE NOT NULL,
+    pds_place_of_birth VARCHAR(100),
+    pds_sex VARCHAR(50),
+    pds_civil_status VARCHAR(50) NOT NULL,
+    pds_height_cm INT(50),
+    pds_weight_kg INT(50),
+    pds_blood_type VARCHAR(3),
+    pds_gsis_no VARCHAR(30),
+    pds_pagibig_no VARCHAR(30),
+    pds_philhealth_no VARCHAR(30),
+    pds_sss_no VARCHAR(30),
+    pds_tin_no VARCHAR(30),
+    pds_agency_no VARCHAR(30),
+    pds_citizenship VARCHAR(50),
+    pds_res_street VARCHAR(100),
+    pds_res_brgy VARCHAR(100),
+    pds_res_city VARCHAR(100),
+    pds_per_street VARCHAR(100),
+    pds_per_brgy VARCHAR(100),
+    pds_per_city VARCHAR(100),
+    pds_telephone VARCHAR(20),
+    pds_mobile VARCHAR(20),
+    pds_email VARCHAR(100),
+
+    -- implement ko pag sinipag
+    pds_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    pds_updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
