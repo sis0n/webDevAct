@@ -1,6 +1,6 @@
 <?php
 
-//try commit
+//tapos na!!
 
 include('config.php');
 if (isset($_GET['token'])) {
