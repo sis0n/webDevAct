@@ -1,11 +1,12 @@
 <?php
-$id = $surname = $fname = $mname = $placeBirth = $sex = $civilStatus =
-  $height = $weight = $bloodType = $gsis = $pagIbig = $philHealth =
-  $sss = $tin = $agency = $citizenship = $resStreet = $resBrgy =
-  $resCity = $perStreet = $perBrgy = $perCity = $telephone = $mobile =
-  $email = "";
-$msg = "";
 include('config.php');
+
+$id = $surname = $fname = $mname = $placeBirth = $sex = $civilStatus =
+$height = $weight = $bloodType = $gsis = $pagIbig = $philHealth =
+$sss = $tin = $agency = $citizenship = $resStreet = $resBrgy =
+$resCity = $perStreet = $perBrgy = $perCity = $telephone = $mobile = $email = "";
+$msg = "";
+
 if (isset($_POST['txtFname'])) {
   // var_dump($_POST);
   $id = isset($_POST['pds_person_id']) ? intval($_POST['pds_person_id']) : 0;
@@ -38,9 +39,19 @@ if (isset($_POST['txtFname'])) {
 
   // check duplicate name
   $checkSql = "SELECT * FROM pds_persons 
-             WHERE pds_surname = '$surname' 
-               AND pds_first_name = '$fname' 
-               AND pds_middle_name = '$mname'";
+             WHERE (
+                (pds_surname = '$surname' 
+                AND pds_first_name = '$fname' 
+                AND pds_middle_name = '$mname')
+                OR pds_mobile = '$mobile'
+                OR pds_email = '$email'
+                OR pds_gsis_no = '$gsis'
+                OR pds_pagibig_no = '$pagIbig'
+                OR pds_philhealth_no = '$philHealth'
+                OR pds_sss_no = '$sss'
+                OR pds_tin_no = '$tin'
+                OR pds_agency_no = '$agency'
+              )";
 
   if (!empty($id)) {
     // exclude current record kapag update
@@ -50,7 +61,57 @@ if (isset($_POST['txtFname'])) {
   $check = $conn->query($checkSql);
 
   if ($check && $check->num_rows > 0) {
-    $msg = '<div class="alert alert-danger">Record already exists for ' . $surname . ', ' . $fname . ' ' . $mname . '</div>';
+    $row = $check->fetch_assoc();
+    if (
+      $row['pds_surname'] == $surname &&
+      $row['pds_first_name'] == $fname &&
+      $row['pds_middle_name'] == $mname
+    ) {
+      $msg = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  duplicate fullname: ' . $surname . ', ' . $fname . ' ' . $mname . '
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+    } elseif ($row['pds_mobile'] == $mobile) {
+      $msg = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  mobile number already in use: ' . $mobile . '
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+    } elseif ($row['pds_email'] == $email) {
+      $msg = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  email already in use: ' . $email . '
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+    } elseif ($row['pds_gsis_no'] == $gsis) {
+      $msg = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  gsis number already in use: ' . $gsis . '
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+    } elseif ($row['pds_pagibig_no'] == $pagIbig) {
+      $msg = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  pag-ibig already in use: ' . $pagIbig . '
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+    } elseif ($row['pds_philhealth_no'] == $philHealth) {
+      $msg = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  philhealth already in use: ' . $philHealth . '
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+    } elseif ($row['pds_sss_no'] == $sss) {
+      $msg = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  sss already in use: ' . $sss . '
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+    } elseif ($row['pds_tin_no'] == $tin) {
+      $msg = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  tin already in use: ' . $tin . '
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+    } elseif ($row['pds_agency_no'] == $agency) {
+      $msg = '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  agency already in use: ' . $agency . '
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>';
+    }
   } else {
     if (!empty($id)) {
       // pang update
@@ -178,18 +239,65 @@ if (isset($_GET['token'])) {
   <div class="container my-5">
     <?php echo $msg; ?>
     <?php
-    if (isset($_GET['msg']) && $_GET['msg'] === 'success') {
-      echo "<div class='alert alert-success alert-dismissible fade show' role='alert'>
-              record successfully saved!
-              <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
-            </div>";
+    if (isset($_GET['msg']) && $_GET['msg'] === "duplicate_name") {
+      echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+          duplicate fullname found.
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
     }
-    if (isset($_GET['msg']) && $_GET['msg'] === "deleted") {
-      echo '
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        record has been deleted.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>';
+    if (isset($_GET['msg']) && $_GET['msg'] === "duplicate_mobile") {
+      echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+          mobile number already in use!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+    }
+    if (isset($_GET['msg']) && $_GET['msg'] === "duplicate_email") {
+      echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+          email already in use!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+    }
+    if (isset($_GET['msg']) && $_GET['msg'] === "duplicate_gsis") {
+      echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+          gsis already in use!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+    }
+    if (isset($_GET['msg']) && $_GET['msg'] === "duplicate_pagibig") {
+      echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+          pagibig already in use!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+    }
+    if (isset($_GET['msg']) && $_GET['msg'] === "duplicate_philhealth") {
+      echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+          philhealth already in use!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+    }
+    if (isset($_GET['msg']) && $_GET['msg'] === "duplicate_sss") {
+      echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+          sss already in use!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+    }
+    if (isset($_GET['msg']) && $_GET['msg'] === "duplicate_tin") {
+      echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+          tin already in use!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+    }
+    if (isset($_GET['msg']) && $_GET['msg'] === "duplicate_agency") {
+      echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+          agency already in use!
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
+    }
+    if (isset($_GET['msg']) && $_GET['msg'] === "duplicate") {
+      echo "<div class='alert alert-danger alert-dismissible fade show' role='alert'>
+          Duplicate record found.
+          <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+        </div>";
     }
     ?>
     <div class="card shadow">
