@@ -2,9 +2,9 @@
 include('config.php');
 
 $id = $surname = $fname = $mname = $placeBirth = $sex = $civilStatus =
-$height = $weight = $bloodType = $gsis = $pagIbig = $philHealth =
-$sss = $tin = $agency = $citizenship = $resStreet = $resBrgy =
-$resCity = $perStreet = $perBrgy = $perCity = $telephone = $mobile = $email = "";
+  $height = $weight = $bloodType = $gsis = $pagIbig = $philHealth =
+  $sss = $tin = $agency = $citizenship = $resStreet = $resBrgy =
+  $resCity = $perStreet = $perBrgy = $perCity = $telephone = $mobile = $email = "";
 $msg = "";
 
 if (isset($_POST['txtFname'])) {
