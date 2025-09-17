@@ -47,6 +47,8 @@ if (isset($_POST['txtFname'])) {
     $checkSql .= " AND pds_person_id != $id";
   }
 
+  $check = $conn->query($checkSql);
+
   if ($check && $check->num_rows > 0) {
     $msg = '<div class="alert alert-danger">Record already exists for ' . $surname . ', ' . $fname . ' ' . $mname . '</div>';
   } else {
